@@ -10,6 +10,7 @@ import fs from "node:fs";
 import path from "node:path";
 import { WhyChoose, CodeShowcase } from "@/components/Showpieces";
 import EngineCatalogue from "@/components/EngineCatalogue";
+import Hero from "@/components/Hero";
 
 const doc = loadDoc("homepage.md");
 
@@ -42,47 +43,37 @@ export default function Home() {
   return (
     <>
       {/* ================= HERO ================= */}
-      <section className="mesh relative overflow-hidden pt-[88px] lg:pt-[110px]" aria-labelledby="home-h1">
-        <div className="scene-mask pointer-events-none absolute inset-x-0 top-0 h-[560px] opacity-60 lg:inset-y-0 lg:left-[50%] lg:right-[-6%] lg:h-auto lg:opacity-100">
-          <HexScene variant="lattice" className="h-full w-full" />
-        </div>
-        <HexDeco className="-left-24 bottom-4 hidden h-[300px] w-[260px] text-emerald/20 lg:block" parallax={0.3} spin={40} />
-
-        <div className="wrap relative grid grid-cols-[minmax(0,1fr)] gap-10 pb-16 lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)] lg:gap-14 lg:pb-24">
-          <div className="pt-6 lg:pt-12">
-            <h1 id="home-h1" data-split data-hero>{h1 && h1.t === "h" ? h1.text : ""}</h1>
-            <p className="lede mt-6" data-reveal data-hero data-delay="0.7">{lede && <Md text={lede.text} />}</p>
-
-            <ul className="mt-8 divide-y divide-forest/10 border-y border-forest/10" data-hero data-reveal data-delay="0.9">
-              {hooks.map((h, i) => {
-                const p = hook(h.text);
-                return (
-                  <li key={i} className="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1 py-4">
-                    {p ? (
-                      <>
-                        <span className="max-w-[58%] text-[.95rem] font-bold leading-tight text-forest sm:text-base">
-                          {p.label}<span className="sr-only"> — </span>
-                          {p.note && <span className="mt-1 block text-[.78rem] font-medium text-ink/60">{p.note}</span>}
-                        </span>
-                        <span className="text-right font-display leading-none text-forest">
-                          <span className="mr-1.5 text-xs font-semibold uppercase tracking-widest text-emerald">from</span>
-                          <span className="price-sweep inline-block px-1 text-[2rem] font-bold sm:text-[2.6rem]" data-sweep>{p.price}</span>
-                          <span className="ml-1.5 text-[.72rem] font-semibold uppercase tracking-wider text-ink/60">incl. VAT</span>
-                        </span>
-                      </>
-                    ) : <Md text={h.text} />}
-                  </li>
-                );
-              })}
-            </ul>
-            <div className="mt-8" data-reveal data-hero data-delay="1.05">{cta && <CtaRow text={cta.text} />}</div>
-          </div>
-
-          <div className="relative z-10 lg:pt-20" data-reveal data-hero data-delay="1.15">
-            <QuotePanel id="get-quote" extras preset="rebuild" />
-          </div>
-        </div>
-      </section>
+          <Hero
+        title={h1 && h1.t === "h" ? h1.text : ""}
+        lede={lede && <Md text={lede.text} />}
+        cta={cta && <CtaRow text={cta.text} dark />}
+quote={<QuotePanel id="get-quote" extras preset="rebuild" wide />} 
+               list={
+          <ul className="grid gap-2.5" data-hero data-reveal data-delay="0.9">
+            {hooks.map((h, i) => {
+              const p = hook(h.text);
+              return (
+                <li key={i} className="group/price relative flex flex-wrap items-center justify-between gap-x-4 gap-y-1 rounded-2xl bg-white/[.06] px-4 py-3.5 ring-1 ring-white/10 transition-all duration-300 hover:-translate-y-0.5 hover:bg-white/[.10] hover:ring-emerald-light/50">
+                  <span aria-hidden className="absolute left-0 top-3 bottom-3 w-[3px] rounded-full bg-emerald-light opacity-60 transition-opacity group-hover/price:opacity-100" />
+                  {p ? (
+                    <>
+                      <span className="min-w-0 flex-1 basis-[46%] pl-2 text-[.9rem] font-bold leading-tight text-white sm:text-[.95rem]">
+                        {p.label}<span className="sr-only"> — </span>
+                        {p.note && <span className="mt-1 block text-[.74rem] font-medium text-white/60">{p.note}</span>}
+                      </span>
+                      <span className="flex items-baseline gap-1.5 pl-2 text-right font-display leading-none text-white">
+                        <span className="text-[.64rem] font-semibold uppercase tracking-widest text-emerald-light">from</span>
+                        <span className="text-[1.65rem] font-bold sm:text-[2rem]">{p.price}</span>
+                        <span className="text-[.64rem] font-semibold uppercase tracking-wider text-white/60">incl. VAT</span>
+                      </span>
+                    </>
+                  ) : <Md text={h.text} />}
+                </li>
+              );
+            })}
+          </ul>
+        }
+      />
 
       {/* ================= trust strip (from supplied copy) ================= */}
       <section aria-label="Why customers choose us" className="border-y border-forest/10 bg-white">
