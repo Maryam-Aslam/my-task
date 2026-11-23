@@ -114,8 +114,8 @@ export function WhyChoose({ id, index, title, paras }: { id: string; index: numb
         </div>
 
         {/* ---------- 3D stage ---------- */}
-        <div className="relative mt-14 lg:mt-20" style={{ perspective: 1500 }}>
-          <div ref={stage} className="relative h-[520px] sm:h-[600px] lg:h-[680px]" style={{ transformStyle: "preserve-3d" }}>
+        <div className="relative mt-10 lg:mt-20" style={{ perspective: 1500 }}>
+          <div ref={stage} className="relative h-[380px] xs:h-[440px] sm:h-[520px] md:h-[580px] lg:h-[680px]" style={{ transformStyle: "preserve-3d" }}>
             {/* Three.js hex lattice behind everything */}
             <div className="scene-mask pointer-events-none absolute inset-0 opacity-60"><HexScene variant="lattice" className="h-full w-full" /></div>
             {/* cursor spotlight */}

@@ -1,20 +1,21 @@
 "use client";
 import { useEffect, useId, useRef, useState } from "react";
-import { ArrowRight, Check, ShieldCheck } from "lucide-react";
+import { ArrowRight, ShieldCheck, Sparkles } from "lucide-react";
 import { gsap } from "@/lib/gsap";
 
-/* ✏️ Optional picture for the green side panel (put in /public/media). Missing file = gradient only. */
 const SIDE_IMG = "/media/quote.png";
 
 export type Service = "rebuild" | "supply-fit" | "engine-only";
-const SERVICES: { v: Service; label: string }[] = [
-  { v: "rebuild", label: "Engine rebuild" },
-  { v: "supply-fit", label: "Supply & fit" },
-  { v: "engine-only", label: "Engine only (supply)" },
+const SERVICES: { v: Service; label: string; sub: string }[] = [
+  { v: "rebuild", label: "Engine rebuild", sub: "Full workshop remanufacture" },
+  { v: "supply-fit", label: "Supply & fit", sub: "Replacement + installation" },
+  { v: "engine-only", label: "Engine only", sub: "UK-wide pallet delivery" },
 ];
 
-const PLATE = /^[A-Z]{2}[0-9]{2}\s?[A-Z]{3}$|^[A-Z][0-9]{1,3}\s?[A-Z]{3}$|^[A-Z]{3}\s?[0-9]{1,3}[A-Z]$|^[0-9]{1,4}\s?[A-Z]{1,3}$|^[A-Z]{1,3}\s?[0-9]{1,4}$/;
-const reduced = () => typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
+const PLATE =
+  /^[A-Z]{2}[0-9]{2}\s?[A-Z]{3}$|^[A-Z][0-9]{1,3}\s?[A-Z]{3}$|^[A-Z]{3}\s?[0-9]{1,3}[A-Z]$|^[0-9]{1,4}\s?[A-Z]{1,3}$|^[A-Z]{1,3}\s?[0-9]{1,4}$/;
+const reduced = () =>
+  typeof matchMedia !== "undefined" && matchMedia("(prefers-reduced-motion: reduce)").matches;
 const isFine = () => matchMedia("(hover: hover) and (pointer: fine)").matches;
 
 /** Dispatches a preselect request to every QuotePanel on the page. */
@@ -26,7 +27,12 @@ export function ServiceLinks({ labels }: { labels?: boolean }) {
   return (
     <div className="flex flex-wrap gap-2" role="group" aria-label="Choose your service">
       {SERVICES.map((s) => (
-        <a key={s.v} href="#get-quote" onClick={() => chooseService(s.v)} className="btn btn--ghost btn--sm">
+        <a
+          key={s.v}
+          href="#get-quote"
+          onClick={() => chooseService(s.v)}
+          className="btn btn--ghost btn--sm"
+        >
           {s.label}
         </a>
       ))}
@@ -46,7 +52,7 @@ type Props = {
   title?: string;
   line?: string;
   variants?: string[];
-  tone?: "light" | "dark"; // kept for compatibility — the panel is now one dark design everywhere
+  tone?: "light" | "dark";
   /** secondary placement: heading rendered as a paragraph so the page keeps one clean outline */
   compact?: boolean;
   /** two-column layout on desktop: intro panel + form */
@@ -54,10 +60,16 @@ type Props = {
 };
 
 export default function QuotePanel({
-  id, model = "", preset = "rebuild", modelTab = false, extras = false,
+  id,
+  model = "",
+  preset = "rebuild",
+  modelTab = false,
+  extras = false,
   title = "Request Your Free Engine Quote",
   line = "Enter your registration and we’ll match your exact engine.",
-  variants = [], compact = false, wide = false,
+  variants = [],
+  compact = false,
+  wide = false,
 }: Props) {
   const uid = useId();
   const root = useRef<HTMLDivElement>(null);
@@ -69,7 +81,7 @@ export default function QuotePanel({
   const [imgOk, setImgOk] = useState(true);
 
   useEffect(() => {
-    if (!id) return; // only the primary panel reacts to the service buttons
+    if (!id) return;
     const h = (e: Event) => setService((e as CustomEvent<Service>).detail);
     window.addEventListener("jlr:service", h);
     return () => window.removeEventListener("jlr:service", h);
@@ -77,78 +89,89 @@ export default function QuotePanel({
 
   useEffect(() => {
     if (!id) return;
-    const h = (e: Event) => { setTab("reg"); setReg(String((e as CustomEvent<string>).detail ?? "").toUpperCase()); };
+    const h = (e: Event) => {
+      setTab("reg");
+      setReg(String((e as CustomEvent<string>).detail ?? "").toUpperCase());
+    };
     window.addEventListener("jlr:reg", h);
     return () => window.removeEventListener("jlr:reg", h);
   }, [id]);
 
   const engineOnly = service === "engine-only";
-  const cta = tab === "model" ? "Find My Engine" : engineOnly ? "Request Current Price & Availability" : "Get Free Quote";
-  const svcIndex = Math.max(0, SERVICES.findIndex((s) => s.v === service));
+  const cta =
+    tab === "model"
+      ? "Find My Engine"
+      : engineOnly
+        ? "Request Current Price & Availability"
+        : "Get Free Quote";
+  const svcIndex = Math.max(
+    0,
+    SERVICES.findIndex((s) => s.v === service)
+  );
 
-  /* ---------------- animation: scroll entrance, idle motion, cursor ---------------- */
+  /* ---------------- clean, subtle GSAP entrance & cursor spotlight ---------------- */
   useEffect(() => {
     const el = root.current;
     if (!el || reduced()) return;
     const cleanups: (() => void)[] = [];
     const ctx = gsap.context(() => {
       const q = gsap.utils.selector(el);
-      const once = { trigger: el, start: "top 86%", once: true };
+      const once = { trigger: el, start: "top 88%", once: true };
 
-      gsap.fromTo(el, { y: 70, opacity: 0, rotateX: 8, transformPerspective: 1400, transformOrigin: "50% 100%" },
-        { y: 0, opacity: 1, rotateX: 0, duration: 1.2, ease: "expo.out", clearProps: "transform,opacity", scrollTrigger: once });
-      gsap.from(q("[data-qh]"), { y: 26, opacity: 0, duration: 0.9, stagger: 0.12, delay: 0.25, ease: "power3.out", clearProps: "transform,opacity", scrollTrigger: once });
-      gsap.from(q("[data-qf]"), { y: 24, opacity: 0, duration: 0.8, stagger: 0.1, delay: 0.35, ease: "power3.out", clearProps: "transform,opacity", scrollTrigger: once });
-
-      /* side panel: slow rotating rings, drifting hexes, image push, light sweep */
-      gsap.to(q("[data-qring]"), { rotate: 360, duration: 60, ease: "none", repeat: -1, transformOrigin: "50% 50%" });
-      gsap.to(q("[data-qring2]"), { rotate: -360, duration: 90, ease: "none", repeat: -1, transformOrigin: "50% 50%" });
-      (q("[data-qdrift]") as HTMLElement[]).forEach((d, i) => {
-        gsap.to(d, { y: gsap.utils.random(-22, -10), x: gsap.utils.random(-10, 10), rotate: gsap.utils.random(-30, 30), duration: gsap.utils.random(3.5, 6), ease: "sine.inOut", yoyo: true, repeat: -1, delay: i * 0.25 });
+      gsap.fromTo(
+        el,
+        { y: 40, opacity: 0 },
+        { y: 0, opacity: 1, duration: 0.9, ease: "power3.out", clearProps: "transform,opacity", scrollTrigger: once }
+      );
+      gsap.from(q("[data-qh]"), {
+        y: 18,
+        opacity: 0,
+        duration: 0.7,
+        stagger: 0.08,
+        delay: 0.15,
+        ease: "power2.out",
+        clearProps: "transform,opacity",
+        scrollTrigger: once,
       });
-      gsap.to(q("[data-qimg]"), { scale: 1.12, duration: 16, ease: "sine.inOut", yoyo: true, repeat: -1 });
-      gsap.to(q("[data-qimgwrap]"), { yPercent: 8, ease: "none", scrollTrigger: { trigger: el, start: "top bottom", end: "bottom top", scrub: 0.8 } });
-      gsap.fromTo(q("[data-qsweep]"), { xPercent: -200 }, { xPercent: 500, duration: 2.6, ease: "power2.inOut", repeat: -1, repeatDelay: 5, delay: 1.5 });
-
-      /* animated gradient border */
-      gsap.fromTo(q("[data-qborder]"), { backgroundPositionX: "0%" }, { backgroundPositionX: "300%", duration: 7, ease: "none", repeat: -1 });
-
-      /* button shine + backdrop glow */
-      gsap.fromTo(q("[data-qshine]"), { xPercent: -200 }, { xPercent: 500, duration: 1.6, ease: "power2.inOut", repeat: -1, repeatDelay: 3.2, delay: 2 });
-      gsap.to(q("[data-qglow]"), { scale: 1.2, opacity: 0.9, duration: 4, ease: "sine.inOut", yoyo: true, repeat: -1 });
-      (q("[data-qfloat]") as HTMLElement[]).forEach((d, i) => {
-        gsap.to(d, { y: gsap.utils.random(-40, -20), x: gsap.utils.random(-16, 16), rotate: gsap.utils.random(-40, 40), duration: gsap.utils.random(4, 7), ease: "sine.inOut", yoyo: true, repeat: -1, delay: i * 0.3 });
+      gsap.from(q("[data-qf]"), {
+        y: 16,
+        opacity: 0,
+        duration: 0.65,
+        stagger: 0.07,
+        delay: 0.2,
+        ease: "power2.out",
+        clearProps: "transform,opacity",
+        scrollTrigger: once,
       });
 
-      /* cursor: light on the panel + image drifts opposite */
       if (isFine()) {
-        const ix = gsap.quickTo(q("[data-qimgwrap2]")[0] ?? el, "x", { duration: 1, ease: "power3" });
-        const iy = gsap.quickTo(q("[data-qimgwrap2]")[0] ?? el, "y", { duration: 1, ease: "power3" });
         const move = (e: PointerEvent) => {
           const b = el.getBoundingClientRect();
-          const nx = (e.clientX - b.left) / b.width, ny = (e.clientY - b.top) / b.height;
-          el.style.setProperty("--qx", `${nx * 100}%`);
-          el.style.setProperty("--qy", `${ny * 100}%`);
-          if (q("[data-qimgwrap2]")[0]) { ix(-(nx - 0.5) * 30); iy(-(ny - 0.5) * 20); }
+          const nx = ((e.clientX - b.left) / b.width) * 100;
+          const ny = ((e.clientY - b.top) / b.height) * 100;
+          el.style.setProperty("--qx", `${nx}%`);
+          el.style.setProperty("--qy", `${ny}%`);
         };
         el.addEventListener("pointermove", move);
         cleanups.push(() => el.removeEventListener("pointermove", move));
       }
     }, el);
-    return () => { cleanups.forEach((c) => c()); ctx.revert(); };
+
+    return () => {
+      cleanups.forEach((c) => c());
+      ctx.revert();
+    };
   }, []);
 
-  /* success: check draws itself, hexes burst out */
   useEffect(() => {
     const el = root.current;
     if (!done || !el || reduced()) return;
     const q = gsap.utils.selector(el);
-    gsap.fromTo(q("[data-qok]"), { y: 20, opacity: 0, scale: 0.96 }, { y: 0, opacity: 1, scale: 1, duration: 0.7, ease: "expo.out" });
-    gsap.fromTo(q("[data-qtick]"), { strokeDashoffset: 30 }, { strokeDashoffset: 0, duration: 0.8, delay: 0.25, ease: "power2.out" });
-    gsap.fromTo(q("[data-qburst]"), { x: 0, y: 0, scale: 0, opacity: 1 }, {
-      x: () => gsap.utils.random(-120, 120), y: () => gsap.utils.random(-90, 60), scale: () => gsap.utils.random(0.8, 1.6), opacity: 0,
-      rotate: () => gsap.utils.random(-120, 120), duration: 1.3, stagger: 0.03, ease: "power3.out",
-    });
+    gsap.fromTo(
+      q("[data-qok]"),
+      { y: 14, opacity: 0 },
+      { y: 0, opacity: 1, duration: 0.55, ease: "power3.out" }
+    );
   }, [done]);
 
   function submit(e: React.FormEvent<HTMLFormElement>) {
@@ -157,197 +180,374 @@ export default function QuotePanel({
       const v = reg.replace(/\s/g, "").toUpperCase();
       if (!PLATE.test(v)) {
         setErr("Please enter a valid UK registration, e.g. AB12 CDE.");
-        if (!reduced()) gsap.fromTo(root.current?.querySelector("[data-qplate]") ?? [], { x: -8 }, { x: 0, duration: 0.6, ease: "elastic.out(1.2,.3)" });
+        if (!reduced()) {
+          gsap.fromTo(
+            root.current?.querySelector("[data-qplate]") ?? [],
+            { x: -6 },
+            { x: 0, duration: 0.45, ease: "elastic.out(1.2,.35)" }
+          );
+        }
         return;
       }
     }
-    setErr(""); setDone(true);
+    setErr("");
+    setDone(true);
   }
 
-  const CUT = "[--c:22px] lg:[--c:32px] [clip-path:polygon(0_0,calc(100%-var(--c))_0,100%_var(--c),100%_100%,var(--c)_100%,0_calc(100%-var(--c)))]";
+  const CUT =
+    "[--c:14px] sm:[--c:18px] lg:[--c:26px] [clip-path:polygon(0_0,calc(100%-var(--c))_0,100%_var(--c),100%_100%,var(--c)_100%,0_calc(100%-var(--c)))]";
 
-  const field = "w-full rounded-xl border border-white/20 bg-white/[.06] px-4 text-base text-white placeholder:text-white/40 min-h-[52px] transition focus:border-emerald-light focus:bg-white/10 focus:shadow-[0_0_0_4px_rgba(62,227,160,.2)] focus:outline-none";
-  const label = "mb-1.5 block text-[.72rem] font-bold uppercase tracking-[.16em] text-[#3ee3a0]";
+  const field =
+    "w-full rounded-xl border border-white/15 bg-white/[0.05] px-3.5 text-sm text-white placeholder:text-white/35 min-h-[44px] sm:px-4 sm:text-base sm:min-h-[50px] transition-all duration-200 focus:border-[#3ee3a0] focus:bg-white/[0.08] focus:ring-2 focus:ring-[#3ee3a0]/25 focus:outline-none";
+  const label =
+    "mb-1.5 block text-[10px] font-bold uppercase tracking-[0.16em] text-[#3ee3a0] sm:mb-2 sm:text-[11px] sm:tracking-[0.18em]";
 
-  const STEPS = ["Choose your service", "Enter your registration", "Receive a written quotation"];
+  const STEPS = [
+    { num: "01", title: "Select your service", desc: "Rebuild, supply & fit, or engine-only" },
+    { num: "02", title: "Enter registration", desc: "We verify your exact JLR engine code" },
+    { num: "03", title: "Written quotation", desc: "Clear breakdown with no hidden extras" },
+  ];
 
   const head = (
-    <div className={`relative isolate overflow-hidden p-6 text-white sm:p-8 ${wide ? "lg:flex lg:flex-col lg:justify-between lg:p-10" : ""}`}>
-      {/* photo + scrims */}
-      {imgOk && (
-        <div data-qimgwrap className="absolute inset-0 -z-10">
-          <div data-qimgwrap2 className="absolute -inset-5">
-            {/* eslint-disable-next-line @next/next/no-img-element */}
-            <img data-qimg src={SIDE_IMG} alt="" loading="lazy" decoding="async" onError={() => setImgOk(false)} className="h-full w-full object-cover" />
-          </div>
-          <div className="absolute inset-0 bg-gradient-to-br from-[#03130c]/92 via-[#05301f]/78 to-[#08794D]/55" />
+    <div
+      className={`relative flex flex-col justify-between bg-[#05160f] p-4 text-white sm:p-8 ${
+        wide ? "lg:p-11" : ""
+      }`}
+    >
+      {/* Subtle top emerald accent bar */}
+      <span
+        aria-hidden
+        className="absolute left-0 top-0 h-[3px] w-20 bg-gradient-to-r from-[#3ee3a0] to-[#08794D] sm:w-24"
+      />
+
+      <div>
+        <div
+          data-qh
+          className="inline-flex items-center gap-1.5 rounded-full border border-[#3ee3a0]/25 bg-[#3ee3a0]/10 px-2.5 py-0.5 text-[10px] font-bold uppercase tracking-[0.15em] text-[#3ee3a0] sm:gap-2 sm:px-3 sm:py-1 sm:text-[11px] sm:tracking-[0.18em]"
+        >
+          <Sparkles size={11} aria-hidden />
+          <span>Free Written Quotation</span>
         </div>
-      )}
-      {!imgOk && <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-br from-[#03130c] via-[#05301f] to-[#08794D]" />}
 
-      {/* rotating hex rings + hex lattice */}
-      <svg data-qring aria-hidden className="pointer-events-none absolute -right-16 -top-16 h-72 w-72 text-white/25" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.5" strokeDasharray="1.5 3"><polygon points="50,3 91,26.5 91,73.5 50,97 9,73.5 9,26.5" /></svg>
-      <svg data-qring2 aria-hidden className="pointer-events-none absolute -right-9 -top-9 h-56 w-56 text-[#3ee3a0]/30" viewBox="0 0 100 100" fill="none" stroke="currentColor" strokeWidth="0.6"><polygon points="50,18 78,34 78,66 50,82 22,66 22,34" /></svg>
-      <svg aria-hidden className="pointer-events-none absolute -bottom-14 -left-10 h-44 w-44 text-white/[.06]" viewBox="0 0 100 100" fill="currentColor"><polygon points="50,3 91,26.5 91,73.5 50,97 9,73.5 9,26.5" /></svg>
-      {["left-[62%] top-[58%] h-4 w-[14px]", "left-[78%] top-[30%] h-3 w-[11px]", "left-[48%] top-[14%] h-3.5 w-3", "left-[86%] top-[72%] h-5 w-[18px]"].map((c, i) => (
-        <span key={i} data-qdrift aria-hidden className={`hex pointer-events-none absolute ${c} ${i % 2 ? "bg-white/70" : "bg-[#3ee3a0]/60"} shadow-[0_0_12px_rgba(255,255,255,.55)]`} />
-      ))}
-      <span data-qsweep aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/4 w-[18%] -skew-x-[22deg] bg-gradient-to-r from-transparent via-white/20 to-transparent" />
-
-      <div className="relative">
-        <p data-qh className="flex items-center gap-2.5 text-[11px] font-bold uppercase tracking-[.22em] text-[#3ee3a0]">
-          <span aria-hidden className="hex h-2.5 w-2.5 bg-[#3ee3a0]" /> Free written quotation
-        </p>
         {compact ? (
-          <p data-qh className="mt-3 font-display text-[1.55rem] font-extrabold leading-[1.1] text-white sm:text-[1.9rem]">{title}</p>
+          <p
+            data-qh
+            className="mt-3 font-display text-xl font-extrabold leading-tight tracking-tight text-white sm:mt-4 sm:text-[1.85rem]"
+          >
+            {title}
+          </p>
         ) : (
-          <h2 data-qh className="mt-3 !text-[1.55rem] !font-extrabold !leading-[1.1] !text-white sm:!text-[1.9rem]">{title}</h2>
+          <h2
+            data-qh
+            className="mt-3 !text-xl !font-extrabold !leading-tight !tracking-tight !text-white sm:mt-4 sm:!text-[1.95rem]"
+          >
+            {title}
+          </h2>
         )}
-        <p data-qh className="mt-3 text-[.95rem] leading-relaxed text-white/80">{line}</p>
+
+        <p data-qh className="mt-2 text-xs leading-relaxed text-white/75 sm:mt-3 sm:text-[0.95rem]">
+          {line}
+        </p>
+
+        {/* Compact step list on mobile, full spacing on sm+ */}
+        <ol data-qh className="mt-5 space-y-2.5 border-t border-white/10 pt-4 sm:mt-8 sm:space-y-4 sm:pt-7">
+          {STEPS.map((step) => (
+            <li key={step.num} className="flex items-start gap-2.5 sm:gap-3.5">
+              <span className="mt-0.5 inline-flex h-6 w-6 shrink-0 items-center justify-center rounded-md border border-[#3ee3a0]/35 bg-[#3ee3a0]/10 font-display text-[11px] font-bold text-[#3ee3a0] sm:h-7 sm:w-7 sm:rounded-lg sm:text-xs">
+                {step.num}
+              </span>
+              <div className="min-w-0">
+                <p className="text-xs font-semibold text-white sm:text-sm">{step.title}</p>
+                <p className="text-[11px] text-white/60 sm:text-xs">{step.desc}</p>
+              </div>
+            </li>
+          ))}
+        </ol>
       </div>
 
-      {/* 3-step path */}
-      <ol data-qh className="relative mt-7 space-y-0 lg:mt-10">
-        {STEPS.map((t, i) => (
-          <li key={t} className="relative flex items-center gap-4 pb-5 last:pb-0">
-            {i < STEPS.length - 1 && <span aria-hidden className="absolute left-[17px] top-9 h-[calc(100%-1.4rem)] w-px bg-gradient-to-b from-[#3ee3a0]/60 to-white/10" />}
-            <span className="hex grid h-9 w-8 shrink-0 place-items-center bg-[#3ee3a0] text-[.8rem] font-extrabold text-[#03130c]">{i + 1}</span>
-            <span className="text-sm font-semibold text-white/90">{t}</span>
-          </li>
-        ))}
-      </ol>
-
-      <p data-qh className="relative mt-6 flex items-center gap-2 text-[.82rem] font-semibold text-white/85 lg:mt-8">
-        <ShieldCheck size={16} aria-hidden className="text-[#3ee3a0]" /> Free, no obligation. Secure enquiry, no spam.
-      </p>
+      <div
+        data-qh
+        className="mt-5 flex items-center gap-2 border-t border-white/10 pt-3.5 text-[11px] font-medium text-white/75 sm:mt-8 sm:gap-2.5 sm:pt-5 sm:text-xs"
+      >
+        <ShieldCheck size={15} aria-hidden className="shrink-0 text-[#3ee3a0]" />
+        <span>No obligation · Direct workshop quote · Zero spam</span>
+      </div>
     </div>
   );
 
   return (
-    <div
-      id={id}
-      ref={root}
-      className="quote-panel relative scroll-mt-28 drop-shadow-[0_40px_50px_rgba(6,60,41,.35)]"
-    >
-      {/* soft glow behind the panel */}
-      <div aria-hidden className="pointer-events-none absolute -inset-x-6 -inset-y-10 -z-10 hidden sm:block">
-        <span data-qglow className="absolute left-[8%] top-0 h-48 w-48 rounded-full bg-emerald-light/30 blur-[70px]" />
-        <span data-qglow className="absolute bottom-0 right-[6%] h-56 w-56 rounded-full bg-emerald/25 blur-[80px]" />
-        {["left-0 top-[18%] h-6 w-[21px]", "right-0 top-[40%] h-8 w-7", "left-[4%] bottom-[8%] h-4 w-[14px]", "right-[10%] top-[2%] h-4 w-[14px]"].map((c, i) => (
-          <span key={i} data-qfloat className={`hex absolute ${c} ${i % 2 ? "bg-emerald/35" : "bg-emerald-light/50"}`} />
-        ))}
-      </div>
-
-      {/* animated gradient border (cut corners) */}
+    <div id={id} ref={root} className="quote-panel relative min-w-0 scroll-mt-24 sm:scroll-mt-28">
+      {/* Subtle outer ambient glow */}
       <div
-        data-qborder
-        className={`p-[1.5px] ${CUT}`}
-        style={{ backgroundImage: "linear-gradient(110deg,#08794D 0%,#3ee3a0 14%,#ffffff 22%,#3ee3a0 30%,#08794D 45%,#08794D 100%)", backgroundSize: "300% 100%" }}
-      >
-        <div className={`relative overflow-hidden bg-[#04140e] ${CUT} ${wide ? "lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" : ""}`}>
-          {/* cursor light */}
-          <div aria-hidden className="pointer-events-none absolute inset-0 z-0 opacity-0 transition-opacity duration-500 [.quote-panel:hover_&]:opacity-100" style={{ background: "radial-gradient(420px circle at var(--qx,50%) var(--qy,30%), rgba(62,227,160,.10), transparent 60%)" }} />
+        aria-hidden
+        className="pointer-events-none absolute -inset-2 -z-10 rounded-3xl bg-emerald/15 opacity-60 blur-2xl sm:-inset-3"
+      />
+
+      {/* Crisp chamfered frame with subtle emerald border */}
+      <div className={`bg-[#3ee3a0]/30 p-[1px] shadow-[0_28px_70px_-20px_rgba(3,19,12,0.65)] ${CUT}`}>
+        <div
+          className={`relative min-w-0 overflow-hidden bg-[#071c14] ${CUT} ${
+            wide ? "lg:grid lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]" : ""
+          }`}
+        >
+          {/* Subtle cursor spotlight */}
+          <div
+            aria-hidden
+            className="pointer-events-none absolute inset-0 z-10 opacity-0 transition-opacity duration-500 [.quote-panel:hover_&]:opacity-100"
+            style={{
+              background:
+                "radial-gradient(500px circle at var(--qx,50%) var(--qy,30%), rgba(62,227,160,0.08), transparent 65%)",
+            }}
+          />
 
           {head}
 
-          <div className="relative z-[1] border-t border-white/10 p-6 sm:p-8 lg:border-l lg:border-t-0 lg:p-10">
-            {done ? (
-              <div data-qok role="status" className="relative overflow-hidden rounded-2xl bg-emerald/15 p-5 text-white ring-1 ring-emerald-light/30">
-                <div className="relative flex items-center gap-3">
-                  <span className="relative grid h-11 w-11 place-items-center rounded-full bg-emerald text-white">
-                    <svg viewBox="0 0 24 24" className="h-6 w-6" fill="none" stroke="currentColor" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><path data-qtick d="M5 12.5l4.5 4.5L19 7.5" strokeDasharray="30" strokeDashoffset="0" /></svg>
-                    {Array.from({ length: 10 }).map((_, i) => <span key={i} data-qburst aria-hidden className="hex absolute left-1/2 top-1/2 h-2.5 w-[9px] bg-emerald-light opacity-0" />)}
-                  </span>
-                  <p className="font-display text-lg font-bold">Enquiry captured (demo)</p>
-                </div>
-                <p className="mt-3 text-sm text-white/80">This is a safe demo interaction: nothing has been sent and no price is generated. A live build posts to the existing lead API.</p>
-                <button className="mt-3 text-sm font-semibold text-[#3ee3a0] underline underline-offset-4" onClick={() => setDone(false)}>Start again</button>
+          {/* Right / Form Column with subtle engine watermark */}
+          <div className="relative isolate flex min-w-0 flex-col justify-center border-t border-white/10 bg-[#081f16] p-4 sm:p-8 lg:border-l lg:border-t-0 lg:p-11">
+            {imgOk && (
+              <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 overflow-hidden">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img
+                  src={SIDE_IMG}
+                  alt=""
+                  loading="lazy"
+                  decoding="async"
+                  onError={() => setImgOk(false)}
+                  className="h-full w-full object-cover object-right opacity-20 mix-blend-luminosity"
+                />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#081f16] via-[#081f16]/90 to-[#081f16]/70" />
               </div>
-            ) : (
-              <form onSubmit={submit} noValidate>
-                {modelTab && (
-                  <div data-qf role="tablist" aria-label="How to identify your vehicle" className="mb-5 grid grid-cols-2 gap-1 rounded-full bg-white/[.07] p-1 ring-1 ring-white/15">
-                    {([["reg", "Enter your registration"], ["model", "Choose your model & variant"]] as const).map(([k, t]) => (
-                      <button key={k} type="button" role="tab" aria-selected={tab === k} onClick={() => { setTab(k); setErr(""); }}
-                        className={`min-h-[44px] rounded-full px-2 text-[.8rem] font-bold leading-tight transition-all duration-300 ${tab === k ? "bg-gradient-to-r from-[#08794D] to-[#14b574] text-white shadow-[0_6px_16px_-6px_rgba(20,181,116,.8)]" : "text-white/75 hover:text-white"}`}>
-                        {t}
-                      </button>
-                    ))}
-                  </div>
-                )}
-
-                <fieldset data-qf className="mb-5">
-                  <legend className={label}>Service</legend>
-                  <div className="relative grid grid-cols-3 rounded-2xl bg-white/[.07] p-1 ring-1 ring-white/15">
-                    <span
-                      aria-hidden
-                      className="absolute bottom-1 left-1 top-1 w-[calc((100%-0.5rem)/3)] rounded-xl bg-gradient-to-r from-[#08794D] to-[#14b574] shadow-[0_8px_20px_-6px_rgba(20,181,116,.8)] transition-transform duration-500 [transition-timing-function:cubic-bezier(.3,1.3,.5,1)]"
-                      style={{ transform: `translateX(${svcIndex * 100}%)` }}
-                    />
-                    {SERVICES.map((s) => {
-                      const on = service === s.v;
-                      return (
-                        <label key={s.v} className={`relative z-10 flex min-h-[48px] cursor-pointer items-center justify-center rounded-xl px-1.5 text-center text-[.78rem] font-bold leading-tight transition-colors duration-300 focus-within:ring-2 focus-within:ring-[#3ee3a0] ${on ? "text-white" : "text-white/70 hover:text-white"}`}>
-                          <input type="radio" name={`${uid}-svc`} className="sr-only" checked={on} onChange={() => setService(s.v)} />
-                          {s.label}
-                        </label>
-                      );
-                    })}
-                  </div>
-                </fieldset>
-
-                {tab === "reg" ? (
-                  <div data-qf>
-                    <label htmlFor={`${uid}-reg`} className={label}>Registration</label>
-                    <div data-qplate className="flex min-h-[68px] overflow-hidden rounded-xl border-2 border-[#d9b800] bg-[#ffd800] text-ink shadow-[inset_0_2px_0_rgba(255,255,255,.55),0_14px_28px_-14px_rgba(0,0,0,.6)] transition-all duration-300 focus-within:scale-[1.015] focus-within:shadow-[0_0_0_4px_rgba(62,227,160,.4),0_18px_34px_-14px_rgba(0,0,0,.6)]">
-                      <span aria-hidden className="grid w-10 shrink-0 place-items-center bg-[#0b3a99] text-[.62rem] font-extrabold leading-none text-[#ffd800]">GB</span>
-                      <input id={`${uid}-reg`} value={reg} onChange={(e) => setReg(e.target.value.toUpperCase())} inputMode="text" autoCapitalize="characters" autoComplete="off" spellCheck={false}
-                        placeholder="AB12 CDE" aria-invalid={!!err} aria-describedby={err ? `${uid}-err` : undefined}
-                        className="w-full min-w-0 bg-transparent px-3 text-center font-display text-[1.8rem] font-bold uppercase tracking-[.14em] text-ink placeholder:text-ink/35 focus:outline-none" />
-                    </div>
-                    {err && <p id={`${uid}-err`} role="alert" className="mt-2 text-sm font-semibold text-red-400">{err}</p>}
-                  </div>
-                ) : (
-                  <div data-qf className="grid grid-cols-2 gap-3">
-                    <div className="col-span-2">
-                      <label htmlFor={`${uid}-m`} className={label}>Model</label>
-                      <input id={`${uid}-m`} defaultValue={model} className={field} />
-                    </div>
-                    <div>
-                      <label htmlFor={`${uid}-y`} className={label}>Year</label>
-                      <input id={`${uid}-y`} inputMode="numeric" placeholder="2018" className={field} />
-                    </div>
-                    <div>
-                      <label htmlFor={`${uid}-v`} className={label}>Engine or badge</label>
-                      <input id={`${uid}-v`} list={`${uid}-vl`} placeholder="e.g. 3.0 SDV6" className={field} />
-                      <datalist id={`${uid}-vl`}>{variants.map((v) => <option key={v} value={v} />)}</datalist>
-                    </div>
-                  </div>
-                )}
-
-                {extras && (
-                  <details data-qf className="group mt-5 rounded-xl border border-dashed border-white/25 px-4 transition-colors open:bg-white/[.04]">
-                    <summary className="flex min-h-[50px] cursor-pointer list-none items-center justify-between text-sm font-bold text-white">
-                      Add your details &amp; symptoms (optional)
-                      <span className="grid h-6 w-6 place-items-center rounded-full bg-[#3ee3a0]/15 text-[#3ee3a0] transition-transform duration-300 group-open:rotate-45" aria-hidden>+</span>
-                    </summary>
-                    <div className="mb-4 mt-2 grid gap-3 sm:grid-cols-2">
-                      <div><label htmlFor={`${uid}-n`} className={label}>Name</label><input id={`${uid}-n`} autoComplete="name" className={field} /></div>
-                      <div><label htmlFor={`${uid}-t`} className={label}>Telephone</label><input id={`${uid}-t`} type="tel" autoComplete="tel" className={field} /></div>
-                      <div className="sm:col-span-2"><label htmlFor={`${uid}-e`} className={label}>Email</label><input id={`${uid}-e`} type="email" autoComplete="email" className={field} /></div>
-                      <div className="sm:col-span-2"><label htmlFor={`${uid}-s`} className={label}>Symptoms</label><textarea id={`${uid}-s`} rows={3} className={`${field} py-3`} /></div>
-                      <div><label htmlFor={`${uid}-vin`} className={label}>VIN or engine code</label><input id={`${uid}-vin`} className={field} /></div>
-                      <div><label htmlFor={`${uid}-pc`} className={label}>Postcode</label><input id={`${uid}-pc`} autoComplete="postal-code" className={field} /></div>
-                    </div>
-                  </details>
-                )}
-
-                <button data-qf type="submit" className="btn btn--primary relative mt-6 w-full overflow-hidden !min-h-[58px] !bg-gradient-to-r !from-[#08794D] !to-[#14b574] !text-base" data-magnetic>
-                  <span data-qshine aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/3 w-1/4 -skew-x-[22deg] bg-gradient-to-r from-transparent via-white/40 to-transparent" />
-                  <span className="relative inline-flex items-center gap-2">{cta} <ArrowRight size={18} aria-hidden /></span>
-                </button>
-              </form>
             )}
+
+            <div className="relative z-[1] min-w-0">
+              {done ? (
+                <div
+                  data-qok
+                  role="status"
+                  className="rounded-2xl border border-[#3ee3a0]/30 bg-[#05160f]/90 p-5 text-white backdrop-blur-md sm:p-6"
+                >
+                  <p className="font-display text-base font-bold text-[#3ee3a0] sm:text-lg">
+                    Enquiry captured (demo)
+                  </p>
+                  <p className="mt-2 text-xs leading-relaxed text-white/80 sm:text-sm">
+                    This is a safe demo interaction: nothing has been sent and no price is
+                    generated. A live build posts to the existing lead API.
+                  </p>
+                  <button
+                    type="button"
+                    className="mt-4 inline-flex items-center gap-1.5 text-xs font-semibold text-[#3ee3a0] underline underline-offset-4 hover:text-white sm:text-sm"
+                    onClick={() => setDone(false)}
+                  >
+                    Start again
+                  </button>
+                </div>
+              ) : (
+                <form onSubmit={submit} noValidate className="space-y-4 sm:space-y-6">
+                  {modelTab && (
+                    <div
+                      data-qf
+                      role="tablist"
+                      aria-label="How to identify your vehicle"
+                      className="grid grid-cols-2 gap-1 rounded-xl border border-white/10 bg-[#04120c] p-1 sm:gap-1.5 sm:p-1.5"
+                    >
+                      {(
+                        [
+                          ["reg", "By registration"],
+                          ["model", "By model & variant"],
+                        ] as const
+                      ).map(([k, t]) => (
+                        <button
+                          key={k}
+                          type="button"
+                          role="tab"
+                          aria-selected={tab === k}
+                          onClick={() => {
+                            setTab(k);
+                            setErr("");
+                          }}
+                          className={`min-h-[38px] rounded-lg px-2 text-[11px] font-bold tracking-wide transition-all duration-200 sm:min-h-[42px] sm:px-3 sm:text-sm ${
+                            tab === k
+                              ? "bg-[#0e3a28] text-[#3ee3a0] shadow-sm ring-1 ring-[#3ee3a0]/35"
+                              : "text-white/65 hover:text-white"
+                          }`}
+                        >
+                          {t}
+                        </button>
+                      ))}
+                    </div>
+                  )}
+
+                  {/* Compact Segmented Service Selector on Mobile */}
+                  <fieldset data-qf className="min-w-0">
+                    <legend className={label}>Select Service</legend>
+                    <div className="relative grid grid-cols-3 rounded-xl border border-white/12 bg-[#04120c] p-1">
+                      <span
+                        aria-hidden
+                        className="absolute bottom-1 left-1 top-1 w-[calc((100%-0.5rem)/3)] rounded-lg bg-gradient-to-r from-[#08794D] to-[#12a368] shadow-[0_4px_14px_-4px_rgba(20,181,116,0.75)] transition-transform duration-300 ease-out"
+                        style={{ transform: `translateX(${svcIndex * 100}%)` }}
+                      />
+                      {SERVICES.map((s) => {
+                        const on = service === s.v;
+                        return (
+                          <label
+                            key={s.v}
+                            className={`relative z-10 flex min-h-[38px] cursor-pointer items-center justify-center rounded-lg px-1.5 text-center text-[11px] font-bold leading-tight transition-colors duration-200 sm:min-h-[46px] sm:px-2 sm:text-[13px] ${
+                              on ? "text-white" : "text-white/65 hover:text-white"
+                            }`}
+                          >
+                            <input
+                              type="radio"
+                              name={`${uid}-svc`}
+                              className="sr-only"
+                              checked={on}
+                              onChange={() => setService(s.v)}
+                            />
+                            <span>{s.label}</span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  </fieldset>
+
+                  {/* Compact Registration or Model Input on Mobile */}
+                  {tab === "reg" ? (
+                    <div data-qf className="min-w-0">
+                      <label htmlFor={`${uid}-reg`} className={label}>
+                        Vehicle Registration
+                      </label>
+                      <div
+                        data-qplate
+                        className="flex min-h-[48px] overflow-hidden rounded-xl border-2 border-[#d4b100] bg-[#ffd800] text-ink shadow-[0_10px_24px_-12px_rgba(0,0,0,0.65)] transition-all duration-200 focus-within:ring-4 focus-within:ring-[#3ee3a0]/35 sm:min-h-[60px]"
+                      >
+                        <span
+                          aria-hidden
+                          className="grid w-9 shrink-0 place-items-center bg-[#0b3a99] text-[9px] font-extrabold tracking-wider text-[#ffd800] sm:w-11 sm:text-[10px]"
+                        >
+                          GB
+                        </span>
+                        <input
+                          id={`${uid}-reg`}
+                          value={reg}
+                          onChange={(e) => setReg(e.target.value.toUpperCase())}
+                          inputMode="text"
+                          autoCapitalize="characters"
+                          autoComplete="off"
+                          spellCheck={false}
+                          placeholder="AB12 CDE"
+                          aria-invalid={!!err}
+                          aria-describedby={err ? `${uid}-err` : undefined}
+                          className="w-full min-w-0 bg-transparent px-2.5 text-center font-display text-lg font-extrabold uppercase tracking-[0.12em] text-ink placeholder:text-ink/35 focus:outline-none sm:px-3 sm:text-[1.75rem] sm:tracking-[0.16em]"
+                        />
+                      </div>
+                      {err && (
+                        <p id={`${uid}-err`} role="alert" className="mt-1.5 text-xs font-semibold text-red-400">
+                          {err}
+                        </p>
+                      )}
+                    </div>
+                  ) : (
+                    <div data-qf className="grid grid-cols-1 gap-3 sm:grid-cols-2 sm:gap-3.5">
+                      <div className="sm:col-span-2">
+                        <label htmlFor={`${uid}-m`} className={label}>
+                          Model
+                        </label>
+                        <input id={`${uid}-m`} defaultValue={model} className={field} />
+                      </div>
+                      <div>
+                        <label htmlFor={`${uid}-y`} className={label}>
+                          Year
+                        </label>
+                        <input id={`${uid}-y`} inputMode="numeric" placeholder="2018" className={field} />
+                      </div>
+                      <div>
+                        <label htmlFor={`${uid}-v`} className={label}>
+                          Engine or badge
+                        </label>
+                        <input
+                          id={`${uid}-v`}
+                          list={`${uid}-vl`}
+                          placeholder="e.g. 3.0 SDV6"
+                          className={field}
+                        />
+                        <datalist id={`${uid}-vl`}>
+                          {variants.map((v) => (
+                            <option key={v} value={v} />
+                          ))}
+                        </datalist>
+                      </div>
+                    </div>
+                  )}
+
+                  {/* Optional Details Drawer */}
+                  {extras && (
+                    <details
+                      data-qf
+                      className="group rounded-xl border border-white/12 bg-[#04120c]/75 px-3.5 transition-colors open:border-[#3ee3a0]/30 sm:px-4"
+                    >
+                      <summary className="flex min-h-[42px] cursor-pointer list-none items-center justify-between gap-2 text-[11px] font-bold uppercase tracking-wider text-white/85 sm:min-h-[48px] sm:text-[13px]">
+                        <span>Add contact details &amp; symptoms (optional)</span>
+                        <span
+                          className="grid h-6 w-6 shrink-0 place-items-center rounded-md bg-white/10 text-[#3ee3a0] transition-transform duration-200 group-open:rotate-45"
+                          aria-hidden
+                        >
+                          +
+                        </span>
+                      </summary>
+                      <div className="mb-3.5 mt-2 grid gap-3 border-t border-white/10 pt-3 sm:mb-4 sm:gap-3.5 sm:grid-cols-2 sm:pt-3.5">
+                        <div>
+                          <label htmlFor={`${uid}-n`} className={label}>
+                            Name
+                          </label>
+                          <input id={`${uid}-n`} autoComplete="name" className={field} />
+                        </div>
+                        <div>
+                          <label htmlFor={`${uid}-t`} className={label}>
+                            Telephone
+                          </label>
+                          <input id={`${uid}-t`} type="tel" autoComplete="tel" className={field} />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label htmlFor={`${uid}-e`} className={label}>
+                            Email
+                          </label>
+                          <input id={`${uid}-e`} type="email" autoComplete="email" className={field} />
+                        </div>
+                        <div className="sm:col-span-2">
+                          <label htmlFor={`${uid}-s`} className={label}>
+                            Symptoms
+                          </label>
+                          <textarea id={`${uid}-s`} rows={3} className={`${field} py-2.5 sm:py-3`} />
+                        </div>
+                        <div>
+                          <label htmlFor={`${uid}-vin`} className={label}>
+                            VIN or engine code
+                          </label>
+                          <input id={`${uid}-vin`} className={field} />
+                        </div>
+                        <div>
+                          <label htmlFor={`${uid}-pc`} className={label}>
+                            Postcode
+                          </label>
+                          <input id={`${uid}-pc`} autoComplete="postal-code" className={field} />
+                        </div>
+                      </div>
+                    </details>
+                  )}
+
+                  {/* Compact Primary Submit CTA on Mobile */}
+                  <button
+                    data-qf
+                    type="submit"
+                    className="btn btn--primary w-full !min-h-[46px] !rounded-xl !bg-gradient-to-r !from-[#08794D] !to-[#14b574] !text-sm !font-bold !tracking-wide !shadow-[0_12px_28px_-8px_rgba(20,181,116,0.7)] transition-all duration-200 hover:-translate-y-0.5 hover:!shadow-[0_16px_34px_-6px_rgba(20,181,116,0.85)] sm:!min-h-[56px] sm:!text-base"
+                    data-magnetic
+                  >
+                    <span className="inline-flex items-center gap-2">
+                      {cta} <ArrowRight size={17} aria-hidden />
+                    </span>
+                  </button>
+                </form>
+              )}
+            </div>
           </div>
         </div>
       </div>

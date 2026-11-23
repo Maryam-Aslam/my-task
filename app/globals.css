@@ -142,3 +142,79 @@ html.js [data-reveal], html.js [data-stagger] > * { opacity: 0; }
 .cat-row::before { content: ""; position: absolute; left: 0; top: 14px; bottom: 14px; width: 3px; border-radius: 3px; background: var(--emerald); transform: scaleY(0); transition: transform .35s cubic-bezier(.2,.7,.2,1); }
 .cat-row[data-active="true"] { background: linear-gradient(90deg, rgba(8,121,77,.10), transparent 80%); padding-left: 1.6rem; }
 .cat-row[data-active="true"]::before { transform: scaleY(1); }
+
+/* =====================================================================
+   MOBILE PREMIUM POLISH
+   Only targets screens narrower than 640 px (sm breakpoint).
+   The laptop/desktop layout is left completely untouched.
+   ===================================================================== */
+
+/* ---- Safe-area insets for notched phones (iPhone, etc.) ----------- */
+@supports (padding: env(safe-area-inset-left)) {
+  .wrap {
+    padding-inline: max(var(--gutter), env(safe-area-inset-left));
+  }
+}
+
+/* ---- Section vertical rhythm: tighter on phones ------------------- */
+@media (max-width: 639px) {
+  .section { padding-block: clamp(44px, 11vw, 72px); }
+
+  /* Hero scene image: shorter clipping so the car is fully visible */
+  /* Hero content: reduce top-padding so copy isn't buried below fold */
+
+  /* Buttons: always full touch target */
+  .btn { min-height: 50px; padding: 0 1.35rem; font-size: .93rem; }
+  .btn--sm { min-height: 46px; padding: 0 1.1rem; font-size: .88rem; }
+
+  /* Lede text: slightly tighter */
+  .lede { font-size: clamp(1rem, 4.4vw, 1.1rem); }
+
+  /* Eyebrow label */
+  .eyebrow { font-size: .68rem; }
+
+  /* Note blocks */
+  .note { font-size: .82rem; }
+
+  /* FAQ summary: comfortable touch target */
+  .faq summary { min-height: 60px; padding: 1rem 0; font-size: clamp(1rem, 3.6vw, 1.1rem); }
+  .faq .plus { width: 32px; height: 32px; }
+
+  /* Tables: already stacked by .dt mobile rules above, just ensure no overflow */
+  .dt { overflow-wrap: break-word; }
+
+  /* Engine catalogue rows: single-column on tiny screens */
+  .cat-row { padding-left: 0.75rem; }
+
+  /* Quote panel: service tab labels – allow wrapping */
+  .quote-panel .faq summary { font-size: 1rem; }
+
+  /* Outline word (decorative huge text in model showcase): scale down */
+  .outline-word { font-size: clamp(4.5rem, 22vw, 10rem); }
+
+  /* Hex bullets: comfortable spacing */
+  .hex-bullet > li { padding-left: 1.65rem; }
+
+  /* "Visit or Contact" clip path: simplify on mobile */
+  /* Rules list: tighten */
+  .rules > li { padding: .85rem 0; }
+}
+
+/* ---- Additional polish: 640–1023 px (tablets / large phones) ------ */
+@media (min-width: 640px) and (max-width: 1023px) {
+  .section { padding-block: clamp(52px, 9vw, 96px); }
+  .outline-word { font-size: clamp(5rem, 20vw, 14rem); }
+}
+
+/* ---- Touch: remove hover-only effects on touch devices ------------- */
+@media (hover: none) {
+  .btn:hover { transform: none !important; }
+  .cat-row:hover { background: none; }
+}
+
+/* ---- Prevent horizontal scroll caused by oversized decorative elements */
+@media (max-width: 1023px) {
+  .outline-word { overflow: hidden; max-width: 100vw; }
+  /* Hex deco SVGs: clip at section edge */
+  section { overflow-x: clip; }
+}

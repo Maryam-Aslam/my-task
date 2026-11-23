@@ -103,11 +103,11 @@ function GroupChapter({ grp, gi, flip }: { grp: Group; gi: number; flip: boolean
   }, []);
 
   return (
-    <div ref={root} className="mb-16 last:mb-0 lg:mb-24">
+    <div ref={root} className="mb-12 last:mb-0 lg:mb-24">
       <div className={`grid gap-8 lg:gap-14 ${flip ? "lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]" : "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"}`}>
         {/* ============ SHOWCASE PANEL: photo fills the whole panel ============ */}
         <div className={`order-first ${flip ? "lg:order-2" : "lg:order-1"}`} style={{ perspective: 1500 }}>
-          <div ref={panel} className="group relative h-full min-h-[520px] overflow-hidden rounded-[32px] bg-forest text-white shadow-[0_50px_90px_-40px_rgba(6,60,41,.7)]" style={{ willChange: "transform, clip-path" }}>
+          <div ref={panel} className="group relative h-full min-h-[380px] xs:min-h-[420px] sm:min-h-[460px] lg:min-h-[520px] overflow-hidden rounded-[32px] bg-forest text-white shadow-[0_50px_90px_-40px_rgba(6,60,41,.7)]" style={{ willChange: "transform, clip-path" }}>
             {/* full-bleed photo */}
             <div data-pdepth="0.5" className="absolute inset-0">
               <div data-pfloat className="absolute -inset-6">

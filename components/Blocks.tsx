@@ -94,7 +94,7 @@ export function Steps({ items }: { items: string[] }) {
     <div data-draw-scope className="relative">
       <div aria-hidden data-grow="y" className="absolute left-[27px] top-6 h-[calc(100%-3rem)] w-[2px] origin-top bg-emerald-light lg:hidden" />
       <div aria-hidden data-grow="x" className="absolute left-0 top-[30px] hidden h-[2px] w-full origin-left bg-emerald-light lg:block" />
-      <ol className={`relative grid gap-9 ${items.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-5"} lg:gap-6`} data-stagger="0.12">
+      <ol className={`relative grid gap-7 sm:gap-9 ${items.length === 4 ? "lg:grid-cols-4" : "lg:grid-cols-5"} lg:gap-6`} data-stagger="0.12">
         {items.map((it, i) => {
           const Icon = icons[i] ?? ClipboardList;
           const m = LEAD.exec(it);

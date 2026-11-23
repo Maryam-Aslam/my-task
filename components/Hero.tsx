@@ -133,19 +133,19 @@ export default function Hero({
 
   return (
     <>
-      <section ref={root} className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[#03110b] text-white" aria-labelledby="home-h1">
+      <section ref={root} className="relative isolate flex min-h-[100svh] flex-col overflow-hidden bg-[#03110b] text-white" aria-labelledby={title ? "home-h1" : undefined}>
         {/* intro curtain (lifts away on load) */}
         <div data-hcurtain aria-hidden className="pointer-events-none absolute inset-0 z-30 bg-[#03110b]">
           <span className="absolute inset-x-0 bottom-0 h-[3px] bg-gradient-to-r from-emerald-light via-emerald to-transparent" />
         </div>
 
         {/* white strip keeps the site header readable */}
-        <div aria-hidden className="absolute inset-x-0 top-0 -z-[5] h-[72px] bg-white lg:h-[88px]" />
+        <div aria-hidden className="absolute inset-x-0 top-0 -z-[5] h-[64px] bg-white sm:h-[72px] lg:h-[88px]" />
 
         {/* ================= SCENE ================= */}
         <div
           data-hpar
-          className="absolute inset-x-0 top-[72px] -z-20 h-[500px] [-webkit-mask-image:linear-gradient(to_bottom,#000_62%,transparent_100%)] [mask-image:linear-gradient(to_bottom,#000_62%,transparent_100%)] sm:h-[600px] lg:inset-x-0 lg:bottom-0 lg:top-[88px] lg:h-auto lg:[-webkit-mask-image:none] lg:[mask-image:none]"
+          className="absolute inset-x-0 bottom-0 top-[64px] -z-20 overflow-hidden sm:top-[72px] lg:top-[88px]"
         >
           <div data-hdepth="0.4" className="absolute -inset-3">
             {!bad ? (
@@ -185,51 +185,64 @@ export default function Hero({
           ))}
         </div>
 
-        {/* soft dark scrims: only behind the text (top-left), cars stay fully visible */}
-        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 top-[330px] -z-10 bg-gradient-to-b from-transparent via-[#03110b]/85 via-[22%] to-[#03110b] sm:top-[420px] lg:hidden" />
-        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 hidden lg:block" style={{ background: "radial-gradient(46% 56% at 0% 16%, rgba(3,17,11,.88) 0%, rgba(3,17,11,.55) 45%, rgba(3,17,11,0) 100%)" }} />
+        {/* Contrast scrim so white headline/copy stay crisp over the bright upper scene */}
+        <div aria-hidden className="pointer-events-none absolute inset-x-0 bottom-0 top-[64px] -z-10 bg-gradient-to-b from-[#03110b]/88 via-[#03110b]/58 to-[#03110b]/95 sm:top-[72px] lg:hidden" />
+        <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 hidden lg:block" style={{ background: "radial-gradient(52% 62% at 10% 24%, rgba(3,17,11,.92) 0%, rgba(3,17,11,.62) 50%, rgba(3,17,11,0) 100%)" }} />
         <div aria-hidden className="pointer-events-none absolute inset-0 -z-10 opacity-0 transition-opacity duration-500 lg:opacity-100" style={{ background: "radial-gradient(520px circle at var(--mx,70%) var(--my,35%), rgba(255,255,255,.12), transparent 62%)" }} />
         <span data-hstreak aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/4 -z-10 hidden w-[8%] -skew-x-[24deg] bg-gradient-to-r from-transparent via-white/45 to-transparent lg:block" />
         <span data-hstreak aria-hidden className="pointer-events-none absolute inset-y-0 -left-1/4 -z-10 hidden w-[3%] -skew-x-[24deg] bg-gradient-to-r from-transparent via-white/30 to-transparent lg:block" />
 
         {/* ================= CONTENT ================= */}
-        <div className="wrap relative z-10 grid flex-1 grid-cols-[minmax(0,1fr)] gap-x-10 pb-8 pt-[370px] sm:pt-[470px] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:pb-10 lg:pt-[124px]">
+        <div className="wrap relative z-10 grid flex-1 grid-cols-[minmax(0,1fr)] gap-x-10 pb-8 pt-[88px] sm:pt-[96px] lg:grid-cols-[minmax(0,5fr)_minmax(0,6fr)] lg:pb-10 lg:pt-[124px]">
           {/* left: copy + registration */}
           <div data-hcopy className="flex flex-col justify-start lg:py-2">
-            <span data-hrule aria-hidden className="mb-4 block h-[3px] w-16 rounded-full bg-gradient-to-r from-emerald-light to-emerald" />
-            <h1 id="home-h1" data-split data-hero className="!text-white !text-[clamp(1.65rem,3vw,2.6rem)] !leading-[1.06]">{title}</h1>
+            <span data-hrule aria-hidden className="mb-3 block h-[3px] w-12 rounded-full bg-gradient-to-r from-emerald-light to-emerald sm:mb-4 sm:w-16" />
 
-            <div className="mt-4 max-w-[52ch]" data-reveal data-hero data-delay="0.7">
-              <div className={`lede !text-[.95rem] !leading-[1.55] !text-white/80 sm:!text-base lg:line-clamp-none ${more ? "" : "line-clamp-3"}`}>{lede}</div>
-              <button type="button" onClick={() => setMore((v) => !v)} aria-expanded={more} className="mt-1.5 text-sm font-bold text-emerald-light underline-offset-4 hover:underline lg:hidden">
+            {title && (
+              <h1
+                id="home-h1"
+                data-split
+                data-hero
+                className="!text-white drop-shadow-[0_2px_14px_rgba(0,0,0,0.75)] !text-[clamp(1.25rem,4.5vw,2.2rem)] !leading-[1.12] sm:!text-[clamp(1.45rem,2.5vw,2.3rem)] sm:!leading-[1.1]"
+              >
+                {title}
+              </h1>
+            )}
+
+            <div className="mt-3 max-w-[52ch] sm:mt-4" data-reveal data-hero data-delay="0.7">
+              <div className={`lede !text-[.92rem] !leading-[1.6] !text-white/90 drop-shadow-[0_1px_10px_rgba(0,0,0,0.7)] sm:!text-[.98rem] sm:!leading-[1.55] lg:line-clamp-none ${more ? "" : "line-clamp-3"}`}>{lede}</div>
+              <button type="button" onClick={() => setMore((v) => !v)} aria-expanded={more} className="mt-1.5 text-sm font-bold text-[#3ee3a0] underline-offset-4 hover:underline lg:hidden">
                 {more ? "Show less" : "Read more"}
               </button>
             </div>
 
             {cta.primary && (
-              <form onSubmit={go} className="mt-6 flex max-w-[520px] items-stretch overflow-hidden rounded-2xl bg-white shadow-[0_24px_50px_-24px_rgba(6,60,41,.55)] ring-1 ring-forest/15 focus-within:ring-2 focus-within:ring-emerald" data-hform>
+              <form onSubmit={go} className="mt-5 flex max-w-[520px] items-stretch overflow-hidden rounded-xl bg-white shadow-[0_24px_50px_-24px_rgba(6,60,41,.55)] ring-1 ring-forest/15 focus-within:ring-2 focus-within:ring-emerald sm:mt-6 sm:rounded-2xl" data-hform>
                 <label htmlFor="hero-reg" className="sr-only">Enter your registration</label>
-                <span className="grid w-11 shrink-0 place-items-center text-forest/70" aria-hidden><Car size={20} /></span>
+                <span className="grid w-10 shrink-0 place-items-center text-forest/70 sm:w-11" aria-hidden><Car size={18} /></span>
                 <input
                   id="hero-reg" value={reg} onChange={(e) => setReg(e.target.value.toUpperCase())}
-                  autoCapitalize="characters" autoComplete="off" spellCheck={false} placeholder="Enter your registration"
-                  className="min-h-[56px] w-full min-w-0 bg-transparent pr-2 text-base font-semibold uppercase tracking-wide text-ink placeholder:font-medium placeholder:normal-case placeholder:tracking-normal placeholder:text-ink/45 focus:outline-none"
+                  autoCapitalize="characters" autoComplete="off" spellCheck={false} placeholder="Enter reg…"
+                  className="min-h-[52px] w-full min-w-0 bg-transparent pr-2 text-[.9rem] font-semibold uppercase tracking-wide text-ink placeholder:font-medium placeholder:normal-case placeholder:tracking-normal placeholder:text-ink/45 focus:outline-none sm:min-h-[56px] sm:text-base sm:placeholder:content-['Enter_your_registration']"
                 />
-                <button type="submit" className="flex shrink-0 items-center gap-2 bg-forest px-4 text-[.86rem] font-bold text-white transition-colors hover:bg-emerald sm:px-5 sm:text-[.95rem]" data-magnetic>
-                  <span className="hidden min-[400px]:inline">{cta.primary.t}</span><span className="min-[400px]:hidden">Get quote</span>
-                  <ArrowRight size={17} aria-hidden />
+                <button
+                  type="submit"
+                  className="flex shrink-0 items-center gap-1.5 bg-[#08794D] px-3.5 text-[.82rem] font-bold text-white sm:gap-2 sm:px-5 sm:text-[.95rem]"
+                >
+                  <span className="hidden min-[380px]:inline">{cta.primary.t}</span><span className="min-[380px]:hidden">Go</span>
+                  <ArrowRight size={16} aria-hidden />
                 </button>
               </form>
             )}
           </div>
 
           {/* right: price cards, sitting under the engine */}
-          <div data-hcards className="mt-7 flex lg:mt-0 lg:items-end lg:justify-end lg:pb-4">
-            <ul className="-mx-5 flex w-[calc(100%+2.5rem)] snap-x snap-mandatory scroll-pl-5 gap-3 sm:scroll-pl-0 overflow-x-auto px-5 pb-3 [scrollbar-width:none] sm:mx-0 sm:w-full sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid lg:max-w-[640px] lg:grid-cols-3 [&::-webkit-scrollbar]:hidden" style={{ perspective: 1200 }}>
+          <div data-hcards className="mt-6 flex sm:mt-7 lg:mt-0 lg:items-end lg:justify-end lg:pb-4">
+            <ul className="-mx-4 flex w-[calc(100%+2rem)] snap-x snap-mandatory scroll-pl-4 gap-2.5 overflow-x-auto px-4 pb-3 [scrollbar-width:none] xs:-mx-5 xs:w-[calc(100%+2.5rem)] xs:scroll-pl-5 xs:gap-3 xs:px-5 sm:mx-0 sm:w-full sm:grid-cols-3 sm:overflow-visible sm:px-0 sm:pb-0 lg:grid lg:max-w-[640px] lg:grid-cols-3 [&::-webkit-scrollbar]:hidden" style={{ perspective: 1200 }}>
               {prices.map((p, i) => {
                 const n = Number(p.price.replace(/[^\d]/g, ""));
                 return (
-                  <li key={i} data-hcard className="group/card relative w-[78%] shrink-0 snap-start sm:w-auto" style={{ transformStyle: "preserve-3d" }}>
+                  <li key={i} data-hcard className="group/card relative w-[72%] min-[380px]:w-[68%] shrink-0 snap-start sm:w-auto" style={{ transformStyle: "preserve-3d" }}>
                     <div
                       data-hfloat
                       className="relative h-full bg-ink/90 px-4 pb-4 pt-5 text-white transition-colors duration-300 group-hover/card:bg-ink"
@@ -258,20 +271,20 @@ export default function Hero({
         </div>
 
         {/* ================= BOTTOM BAR ================= */}
-        <div data-hbar className="relative z-10 bg-forest text-white [clip-path:polygon(0_14px,100%_0,100%_100%,0_100%)] lg:[clip-path:polygon(0_0,100%_0,100%_100%,0_100%)]">
-          <div className="wrap flex flex-col gap-3 py-5 pt-7 sm:flex-row sm:items-center sm:justify-between lg:pt-5">
+        <div data-hbar className="relative z-10 bg-forest text-white [clip-path:polygon(0_12px,100%_0,100%_100%,0_100%)] lg:[clip-path:polygon(0_0,100%_0,100%_100%,0_100%)]">
+          <div className="wrap flex flex-col gap-2.5 py-4 pt-6 sm:flex-row sm:items-center sm:justify-between sm:gap-3 sm:py-5 lg:pt-5">
             <p className="hidden text-[.78rem] font-semibold uppercase tracking-[.2em] text-white/70 lg:block">
               <span className="hex mr-3 inline-block h-3 w-[11px] bg-emerald-light align-middle" aria-hidden />Independent Essex workshop
             </p>
-            <div className="flex flex-wrap items-center gap-x-8 gap-y-2">
+            <div className="flex flex-wrap items-center gap-x-6 gap-y-2 sm:gap-x-8">
               {cta.second && (
-                <a href={cta.second.h} className="inline-flex min-h-[44px] items-center gap-2 text-[.95rem] font-semibold hover:text-emerald-light">
-                  <Search size={18} aria-hidden /> {cta.second.t}
+                <a href={cta.second.h} className="inline-flex min-h-[44px] items-center gap-2 text-[.9rem] font-semibold hover:text-emerald-light sm:text-[.95rem]">
+                  <Search size={17} aria-hidden /> {cta.second.t}
                 </a>
               )}
               {cta.tel && (
-                <a href={cta.tel.h} className="inline-flex min-h-[44px] items-center gap-2 font-display text-lg font-bold hover:text-emerald-light">
-                  <span className="relative grid place-items-center"><span data-hpulse aria-hidden className="absolute h-5 w-5 rounded-full bg-emerald-light/60" /><Phone size={18} aria-hidden className="relative" /></span> {cta.tel.t}
+                <a href={cta.tel.h} className="inline-flex min-h-[44px] items-center gap-2 font-display text-base font-bold hover:text-emerald-light sm:text-lg">
+                  <span className="relative grid place-items-center"><span data-hpulse aria-hidden className="absolute h-5 w-5 rounded-full bg-emerald-light/60" /><Phone size={17} aria-hidden className="relative" /></span> {cta.tel.t}
                 </a>
               )}
             </div>
@@ -280,8 +293,8 @@ export default function Hero({
       </section>
 
       {/* ================= QUOTE PANEL ================= */}
-<section className="mesh relative overflow-hidden py-14 lg:py-20" aria-label="Request your quote">
-          <div className="wrap">
+      <section className="mesh relative overflow-hidden py-10 sm:py-14 lg:py-20" aria-label="Request your quote">
+        <div className="wrap">
           <div className="mx-auto max-w-[1040px]" data-reveal>{quote}</div>
         </div>
       </section>

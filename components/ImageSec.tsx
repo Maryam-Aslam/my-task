@@ -110,8 +110,8 @@ export default function ImageSec({
             )}
 
             {/* ---- content ---- */}
-            <div className="relative z-10 grid gap-6 p-5 pt-8 sm:p-8 lg:grid-cols-[minmax(0,4.4fr)_minmax(0,7.6fr)] lg:gap-12 lg:p-12">
-              <div className="min-h-[180px] lg:min-h-0">
+            <div className="relative z-10 grid gap-6 p-5 pt-7 sm:p-8 sm:pt-8 lg:grid-cols-[minmax(0,4.4fr)_minmax(0,7.6fr)] lg:gap-12 lg:p-12">
+              <div className="lg:min-h-0">
                 <div className="lg:sticky lg:top-28">
                   {num && (
                     <p className="mb-4 inline-flex items-center gap-2.5 text-[.72rem] font-bold uppercase tracking-[.22em] text-emerald-light" data-reveal>

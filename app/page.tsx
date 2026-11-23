@@ -71,13 +71,13 @@ export default function Home() {
             { i: ShieldCheck, a: "12-month warranty", b: "unlimited mileage, subject to the written terms" },
             { i: Truck, a: "UK-wide recovery from £70", b: "no recovery markup" },
           ].map((s, i) => (
-            <li key={i} className="flex items-center gap-4 py-6 sm:px-6 first:sm:pl-0">
-              <span className="hex grid h-12 w-11 shrink-0 place-items-center bg-emerald/10 text-emerald">
+            <li key={i} className="flex items-center gap-4 py-5 sm:py-6 sm:px-6 first:sm:pl-0">
+              <span className="hex grid h-11 w-10 shrink-0 place-items-center bg-emerald/10 text-emerald sm:h-12 sm:w-11">
                 <s.i size={20} aria-hidden />
               </span>
               <span className="leading-tight">
-                <strong className="block font-display text-lg text-forest">{s.a}</strong>
-                <span className="text-sm text-ink/65">{s.b}</span>
+                <strong className="block font-display text-base text-forest sm:text-lg">{s.a}</strong>
+                <span className="text-xs text-ink/65 sm:text-sm">{s.b}</span>
               </span>
             </li>
           ))}
@@ -232,7 +232,6 @@ export default function Home() {
           );
         }
 
-        /* ================= SECTION 06: REPLACEMENT ENGINES (Clean Dark Atelier Panel) ================= */
         if (s.title.startsWith("Replacement Engines")) {
           return (
             <div
@@ -262,7 +261,7 @@ export default function Home() {
 
               <div className="relative z-10 [&>.section]:!bg-transparent [&_.section\_\_index]:!text-white [&_[data-sec-index]]:!text-white">
                 <Sec id={s.id} title={s.title} index={n} tone="forest" wide deco={false}>
-                  <div className="max-w-3xl rounded-2xl border border-emerald-light/25 bg-[#041710]/78 p-6 shadow-[0_28px_70px_-25px_rgba(0,0,0,0.9)] backdrop-blur-md sm:p-8 [&_*]:!text-white/90 [&_h3]:!text-emerald-light [&_strong]:!text-white [&_a]:!text-emerald-light [&_table]:!w-full [&_th]:!border-white/15 [&_td]:!border-white/10">
+                  <div className="max-w-3xl rounded-2xl border border-emerald-light/25 bg-[#041710]/78 p-5 shadow-[0_28px_70px_-25px_rgba(0,0,0,0.9)] backdrop-blur-md sm:p-8 [&_*]:!text-white/90 [&_h3]:!text-emerald-light [&_strong]:!text-white [&_a]:!text-emerald-light [&_table]:!w-full [&_th]:!border-white/15 [&_td]:!border-white/10">
                     <BlockRenderer blocks={s.blocks} />
                   </div>
                 </Sec>
@@ -271,7 +270,6 @@ export default function Home() {
           );
         }
 
-        /* ================= SECTION 08: COMMONLY CONFUSED CODES (Compact 2-Col Emerald Cards) ================= */
         if (s.title.startsWith("Which JLR Engine Codes")) {
           return (
             <div
@@ -294,7 +292,7 @@ export default function Home() {
                 <div className="absolute inset-0 bg-gradient-to-r from-[#03110b]/90 via-[#052016]/72 to-[#03110b]/45" />
               </div>
 
-              <div className="relative z-10 [&>.section]:!bg-transparent [&>.section]:!py-14 lg:[&>.section]:!py-16 [&_.section\_\_index]:!text-white [&_[data-sec-index]]:!text-white">
+              <div className="relative z-10 [&>.section]:!bg-transparent [&>.section]:!py-12 lg:[&>.section]:!py-16 [&_.section\_\_index]:!text-white [&_[data-sec-index]]:!text-white">
                 <Sec id={s.id} title={s.title} index={n} tone="forest" wide deco={false}>
                   <div className="rounded-2xl border border-emerald-light/25 bg-[#041710]/80 p-5 shadow-[0_24px_60px_-25px_rgba(0,0,0,0.85)] backdrop-blur-md sm:p-6 [&_*]:!text-white/90 [&_p]:!text-sm [&_p]:!leading-snug [&_strong]:!text-emerald-light [&_a]:!text-emerald-light [&_ul]:!m-0 [&_ul]:grid [&_ul]:grid-cols-1 [&_ul]:gap-2.5 [&_ul]:md:grid-cols-2 [&_li]:!m-0 [&_li]:rounded-xl [&_li]:border [&_li]:border-emerald-light/20 [&_li]:bg-[#08261a]/85 [&_li]:p-3.5 [&_li]:text-xs [&_li]:leading-relaxed sm:[&_li]:text-sm [&_li]:transition [&_li]:hover:border-emerald-light/55">
                     <BlockRenderer blocks={s.blocks} />
@@ -367,10 +365,9 @@ export default function Home() {
           );
         }
 
-        /* ================= SECTION 12: VISIT OR CONTACT — car image, single glass panel ================= */
         if (s.title.startsWith("Visit or Contact")) {
           const CUT =
-            "[clip-path:polygon(0_0,calc(100%-26px)_0,100%_26px,100%_100%,26px_100%,0_calc(100%-26px))]";
+            "[clip-path:polygon(0_0,calc(100%-26px)_0,100%_26px,100%_100%,26px_100%,0_calc(100%-26px))] sm:[clip-path:polygon(0_0,calc(100%-26px)_0,100%_26px,100%_100%,26px_100%,0_calc(100%-26px))]";
           return (
             <div key={s.id} className="relative isolate overflow-hidden bg-[#04140e] text-white">
               <div aria-hidden className="pointer-events-none absolute inset-0 -z-10">
@@ -382,7 +379,7 @@ export default function Home() {
                   decoding="async"
                   className="h-full w-full object-cover object-center"
                 />
-                <div className="absolute inset-0 bg-gradient-to-r from-[#04140e]/90 via-[#04140e]/55 to-[#04140e]/10 max-lg:from-[#04140e]/80 max-lg:to-[#04140e]/70" />
+                <div className="absolute inset-0 bg-gradient-to-r from-[#04140e]/90 via-[#04140e]/55 to-[#04140e]/10 max-lg:from-[#04140e]/88 max-lg:to-[#04140e]/78" />
                 <div className="absolute inset-0 bg-gradient-to-b from-[#04140e]/35 via-transparent to-[#04140e]/55" />
               </div>
 
@@ -395,22 +392,22 @@ export default function Home() {
                 <Sec id={s.id} title={s.title} index={n} tone="forest" deco={false}>
                   <div className={`max-w-2xl bg-gradient-to-br from-emerald-light/70 via-white/15 to-emerald-light/20 p-px ${CUT}`}>
                     <div
-                      className={`bg-[#04140e]/80 p-6 backdrop-blur-md sm:p-8 ${CUT} [&_p]:!m-0 [&_p]:!text-base [&_p]:!leading-relaxed [&_p]:!text-white/85 [&_p+p]:!mt-4 [&_strong]:!text-white [&_a]:!font-semibold [&_a]:!text-emerald-light [&_a]:underline [&_a]:decoration-emerald-light/40 [&_a]:underline-offset-4 hover:[&_a]:!text-white`}
+                      className={`bg-[#04140e]/80 p-5 backdrop-blur-md sm:p-8 ${CUT} [&_p]:!m-0 [&_p]:!text-base [&_p]:!leading-relaxed [&_p]:!text-white/85 [&_p+p]:!mt-4 [&_strong]:!text-white [&_a]:!font-semibold [&_a]:!text-emerald-light [&_a]:underline [&_a]:decoration-emerald-light/40 [&_a]:underline-offset-4 hover:[&_a]:!text-white`}
                     >
                       <BlockRenderer blocks={s.blocks} />
 
-                      <div className="mt-7 grid gap-6 border-t border-white/15 pt-6 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-white/15">
+                      <div className="mt-6 grid gap-5 border-t border-white/15 pt-5 sm:mt-7 sm:gap-6 sm:grid-cols-2 sm:gap-0 sm:divide-x sm:divide-white/15">
                         <div className="sm:pr-6">
                           <span className="block text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-light">
                             Workshop Location
                           </span>
-                          <span className="mt-1.5 block text-lg font-extrabold">Ramsden Heath, Billericay</span>
+                          <span className="mt-1.5 block text-base font-extrabold sm:text-lg">Ramsden Heath, Billericay</span>
                         </div>
                         <a href="tel:02034884649" className="group/p block !no-underline sm:pl-6">
                           <span className="block text-[11px] font-bold uppercase tracking-[0.2em] text-emerald-light">
                             Direct Telephone
                           </span>
-                          <span className="mt-1.5 block text-lg font-extrabold !text-white transition-colors group-hover/p:!text-emerald-light">
+                          <span className="mt-1.5 block text-base font-extrabold !text-white transition-colors group-hover/p:!text-emerald-light sm:text-lg">
                             0203 488 4649
                           </span>
                         </a>

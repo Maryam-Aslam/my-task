@@ -117,7 +117,7 @@ function Chapter({ row, media, flip, hasVideo }: { row: ModelRow; media: CarMedi
   const text = (
     <div className={`relative z-10 ${flip ? "lg:order-2" : "lg:order-1"}`}>
       <p data-in className="eyebrow">Chapter {media.chapter}</p>
-      <h3 data-in className={`mt-4 !text-[clamp(2.2rem,6vw,4rem)] !leading-[1] ${dark ? "!text-white" : ""}`}>
+      <h3 data-in className={`mt-4 !text-[clamp(1.9rem,6vw,4rem)] !leading-[1.05] sm:!text-[clamp(2.2rem,6vw,4rem)] sm:!leading-[1] ${dark ? "!text-white" : ""}`}>
         <Link href={href} className="no-underline hover:underline">{name}</Link>
       </h3>
 
@@ -135,7 +135,7 @@ function Chapter({ row, media, flip, hasVideo }: { row: ModelRow; media: CarMedi
         {c.price ? (
           <p className={`leading-none ${dark ? "text-white" : "text-forest"}`}>
             <span className={`block text-[.72rem] font-bold uppercase tracking-[.16em] ${dark ? "text-emerald-light" : "text-emerald"}`}>{c.label} from</span>
-            <span className="mt-1.5 block font-display text-[2.6rem] font-bold tracking-tight sm:text-[3.2rem]">{c.price}</span>
+            <span className="mt-1.5 block font-display text-[2.2rem] font-bold tracking-tight sm:text-[2.6rem] md:text-[3.2rem]">{c.price}</span>
             {c.vat && <span className={`text-xs font-semibold uppercase tracking-wider ${dark ? "text-white/60" : "text-ink/55"}`}>{c.vat}</span>}
           </p>
         ) : (
@@ -164,7 +164,7 @@ function Chapter({ row, media, flip, hasVideo }: { row: ModelRow; media: CarMedi
   );
   return (
     <div ref={root} className={`relative overflow-hidden ${bg} section`}>
-      <span data-outline aria-hidden className="outline-word pointer-events-none absolute left-0 top-[14%] z-20 select-none" style={{ WebkitTextStrokeColor: dark ? "rgba(24,183,119,.45)" : "rgba(8,121,77,.32)" }}>{media.outline}</span>
+      <span data-outline aria-hidden className="outline-word pointer-events-none absolute left-0 top-[14%] z-20 select-none" style={{ WebkitTextStrokeColor: dark ? "rgba(24,183,119,.45)" : "rgba(8,121,77,.32)" }} />
       <div className={`wrap relative grid items-center gap-10 lg:gap-16 ${flip ? "lg:grid-cols-[minmax(0,7fr)_minmax(0,5fr)]" : "lg:grid-cols-[minmax(0,5fr)_minmax(0,7fr)]"}`}>
         {text}
         <div className={`order-first ${flip ? "lg:order-1" : "lg:order-2"}`}>{picture}</div>
@@ -209,7 +209,7 @@ export default function ModelShowcase({ intro, groups, outro, videos = [] }: { i
               {g.rows.map((r) => {
                 const c = parseCta(r.cta);
                 return (
-                  <li key={r.model} className="group grid gap-2 md:grid-cols-[200px_1fr_auto] md:items-center md:gap-8">
+                  <li key={r.model} className="group grid gap-1.5 md:grid-cols-[200px_1fr_auto] md:items-center md:gap-8">
                     <strong className="font-display text-xl text-forest transition-transform duration-300 group-hover:translate-x-1.5"><Md text={r.model} /></strong>
                     <span className="text-[.97rem] text-[#33423b]">{r.covers}</span>
                     <span className="text-[.95rem]"><Md text={r.cta} /></span>
