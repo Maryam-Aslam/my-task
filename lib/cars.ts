@@ -15,7 +15,7 @@ export type CarMedia = {
 export const FEATURES: Record<string, CarMedia> = {
   "Range Rover": {
     key: "range-rover", chapter: "01", variant: "light", outline: "RANGE ROVER",
-    src: "/media/one",
+    src: "/media/one.png",
     alt: "Range Rover Autobiography (L460) in Charente Grey",
     accent: "#8a9a93",
   },

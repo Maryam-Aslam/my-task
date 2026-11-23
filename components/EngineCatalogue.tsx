@@ -9,9 +9,9 @@ import HexScene from "./HexScene";
    image = direct link or "/media/x.jpg" in /public.  video = optional "/media/x.mp4" (muted loop).
    pos = which part of the photo stays visible when cropped (CSS object-position). */
 export const CAT_MEDIA = [
-  { image: "/media/eone.jfif", video: "", pos: "50% 35%" },
-  { image: "/media/etwo.jfif", video: "", pos: "50% 35%" },
-{ image: "/media/ethree.jfif", video: "", pos: "50% 50%" },
+  { image: "/media/eone.png", video: "", pos: "50% 35%" },
+  { image: "/media/etwo.png", video: "", pos: "50% 35%" },
+{ image: "/media/ethree.png", video: "", pos: "50% 50%" },
 ];
 
 type Group = { title: string; head: string[]; rows: string[][] };
